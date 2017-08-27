@@ -44,10 +44,8 @@ and put it in below json format(This data bag should be available on Chef server
 ```
 {
   "id": "certificates",
-  "dockerhub_url": "dev.devcnapp.com",
-  "private_keys": "-----BEGIN RSA PRIVATE KEY-----\n....\n-----END RSA PRIVATE KEY-----",
-  "public_certs": "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----",
-  "rootca": "-----BEGIN CERTIFICATE-----\....\n-----END CERTIFICATE-----"
+  "application_url": "dev.devcnapp.com",
+  "private_keys": "-----BEGIN RSA PRIVATE KEY-----\n....\n-----END RSA PRIVATE KEY-----"
 }
 
 ```
