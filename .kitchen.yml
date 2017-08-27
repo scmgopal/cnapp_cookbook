@@ -1,0 +1,38 @@
+---
+driver:
+  name: vagrant
+  # http_proxy: http://www-proxy.us.oracle.com:80
+  # https_proxy: http://www-proxy.us.oracle.com:80
+
+provisioner:
+  name: chef_zero
+  # environments_path: "test/integration/environments"
+  # roles_path: "test/integration/roles"
+  # data_bags_path: "test/integration/data_bags"
+  # encrypted_data_bag_secret_key_path: "test/integration/default/encrypted_data_bag_secret"
+  # client_rb:
+  #    environment: lumberjack_localdev
+platforms:
+  - name: chef12
+    driver_config:
+      vm_hostname: default-centos7min
+    driver:
+      customize:
+        memory: 2048
+        cpus: 2
+      vm_hostname: default-centos7min
+      box: centos7min
+      network:
+        - ["forwarded_port", {guest: 80, host: 80}]
+        - ["forwarded_port", {guest: 8080, host: 8080}]
+    provisioner:
+      require_chef_omnibus: 12.20.3
+      # client_rb:
+      #   environment: lumberjack_localdev
+
+suites:
+  - name: default
+    run_list:
+      - recipe[cnapp::web]
+      - recipe[cnapp::app]
+    attributes:

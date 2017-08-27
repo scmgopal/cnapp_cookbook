@@ -1,0 +1,42 @@
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+LoadModule cluster_slotmem_module modules/mod_cluster_slotmem.so
+LoadModule manager_module modules/mod_manager.so
+LoadModule proxy_cluster_module modules/mod_proxy_cluster.so
+LoadModule advertise_module modules/mod_advertise.so
+
+Listen 9999
+
+<VirtualHost *:80>
+  <Location /companyNews/images/>
+    ProxyPass !
+  </Location>
+  <Location /companyNews/styles/>
+    ProxyPass !
+  </Location>
+  <Directory />
+    AllowOverride none
+    Require all granted
+  </Directory>
+  <Location /mod_cluster_manager>
+    SetHandler mod_cluster-manager
+    AllowOverride none
+    Require all granted
+  </Location>
+  ProxyPassMatch "^/(.*\.png)$" !
+  ProxyPassMatch "^/(.*\.css)$" !
+  ProxyPass / balancer://cnappbalancer/ stickysession=JSESSIONID|jsessionid nofailover=On
+  ProxyPassReverse / balancer://cnappbalancer/
+
+</VirtualHost>
+
+<VirtualHost 127.0.0.1:9999>
+  <Directory />
+    AllowOverride none
+    Require all granted
+  </Directory>
+  ServerAdvertise on http://127.0.0.1:9999
+  EnableMCPMReceive
+  ManagerBalancerName cnappbalancer
+  AdvertiseFrequency 5
+</VirtualHost>
